@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -7,11 +6,12 @@ export async function GET(request: Request) {
     const dealYmd = searchParams.get('dealYmd');
 
     if (!lawdCd || !dealYmd) {
-        return NextResponse.json({ error: 'Missing parameters (lawdCd, dealYmd)' }, { status: 400 });
+        return NextResponse.json({ error: 'Missing required parameters: lawdCd, dealYmd' }, { status: 400 });
     }
 
     // Base URL for Apartment Trade Detail
-    const url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
+    // Using http for MoLIT as they sometimes have issues with https or certificates
+    const baseUrl = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
     const serviceKey = process.env.MOLIT_API_KEY;
 
     if (!serviceKey) {
@@ -19,39 +19,43 @@ export async function GET(request: Request) {
     }
 
     try {
-        const response = await axios.get(url, {
-            params: {
-                serviceKey: serviceKey,
-                LAWD_CD: lawdCd,
-                DEAL_YM: dealYmd,
-            },
-            transformResponse: [(data) => data] // Prevent axios from auto-parsing JSON/XML
-        });
+        // Construct query parameters manually for fetch
+        // Note: serviceKey in public data portal is often already encoded or needs specific handling.
+        // We assume the key in .env is the decoded key generally, but if it has %, it might be encoded.
+        // Sending it as a string concatenation is often safest for these legacy APIs.
 
-        // We return the raw string data (XML or JSON) for the client to handle,
-        // or we'd parse it here. For robustness, let's just forward the data status.
-        // If it's XML, valid XML string. If JSON, valid JSON string or object.
+        const queryParams = [
+            `serviceKey=${serviceKey}`,
+            `LAWD_CD=${lawdCd}`,
+            `DEAL_YM=${dealYmd}`
+        ].join('&');
 
-        let responseData = response.data;
+        const fullUrl = `${baseUrl}?${queryParams}`;
+        console.log('Fetching MoLIT Data from:', fullUrl);
 
-        // The API might return XML even if we handle it with axios.
+        const response = await fetch(fullUrl);
+
+        if (!response.ok) {
+            throw new Error(`MoLIT API answered with status ${response.status}`);
+        }
+
+        const responseText = await response.text();
+
+        // XML to JSON handling logic
         // If it starts with <, it's XML.
-        if (typeof responseData === 'string' && responseData.trim().startsWith('<')) {
-            // We can returning as is, but let's try to extract items if possible or just pass it to client
-            // For now, return as is with format 'xml'
+        if (responseText.trim().startsWith('<')) {
             return NextResponse.json({
                 success: true,
-                data: responseData,
+                data: responseText,
                 format: 'xml'
             });
         }
 
+        let responseData;
         try {
-            if (typeof responseData === 'string' && (responseData.startsWith('{') || responseData.startsWith('['))) {
-                responseData = JSON.parse(responseData);
-            }
+            responseData = JSON.parse(responseText);
         } catch (e) {
-            // ignore
+            responseData = responseText;
         }
 
         return NextResponse.json({
@@ -63,13 +67,10 @@ export async function GET(request: Request) {
     } catch (error: any) {
         console.error('API Error Details:', {
             message: error.message,
-            response: error.response?.data,
-            status: error.response?.status
         });
         return NextResponse.json({
             error: 'Upstream API Error',
-            details: error.message, // Be careful not to expose sensitive info in prod, but helpful for now
-            upstreamStatus: error.response?.status
+            details: error.message,
         }, { status: 500 });
     }
 }
