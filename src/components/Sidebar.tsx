@@ -60,7 +60,8 @@ const Checkbox = ({ label, checked, onChange }: any) => (
 );
 
 export const Sidebar: React.FC<SidebarProps> = ({ inputs, updateInput }) => {
-    const [sections, setSections] = useState({ a: true, b: true, c: true, realtime: false });
+    // Set 'realtime' to true by default
+    const [sections, setSections] = useState({ a: true, b: true, c: true, realtime: true });
 
     const toggle = (key: keyof typeof sections) => setSections(p => ({ ...p, [key]: !p[key] }));
 
