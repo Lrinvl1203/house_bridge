@@ -69,6 +69,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ inputs, updateInput }) => {
     const [showRegionList, setShowRegionList] = useState(false);
     const [dealMonth, setDealMonth] = useState(202401);
 
+    // Apartment Name Filter
+    const [aptFilter, setAptFilter] = useState('');
+
     const filteredRegions = KOREA_REGIONS.filter(r => r.name.includes(regionName) || r.code.includes(regionName));
 
     const handleRegionSelect = (code: string, name: string) => {
