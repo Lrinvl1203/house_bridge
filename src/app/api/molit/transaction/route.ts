@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     }
 
     // Base URL for Apartment Trade Detail
-    const url = 'http://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getUrtAptTrdeDetailSvc';
+    const url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev';
     const serviceKey = process.env.MOLIT_API_KEY;
 
     if (!serviceKey) {
@@ -22,11 +22,8 @@ export async function GET(request: Request) {
         const response = await axios.get(url, {
             params: {
                 serviceKey: serviceKey,
-                pageNo: 1,
-                numOfRows: 100, // Fetch up to 100 items
                 LAWD_CD: lawdCd,
-                DEAL_YMD: dealYmd,
-                _type: 'json' // Request JSON format (supported by many gov APIs)
+                DEAL_YM: dealYmd,
             },
             transformResponse: [(data) => data] // Prevent axios from auto-parsing JSON/XML
         });
@@ -36,6 +33,19 @@ export async function GET(request: Request) {
         // If it's XML, valid XML string. If JSON, valid JSON string or object.
 
         let responseData = response.data;
+
+        // The API might return XML even if we handle it with axios.
+        // If it starts with <, it's XML.
+        if (typeof responseData === 'string' && responseData.trim().startsWith('<')) {
+            // We can returning as is, but let's try to extract items if possible or just pass it to client
+            // For now, return as is with format 'xml'
+            return NextResponse.json({
+                success: true,
+                data: responseData,
+                format: 'xml'
+            });
+        }
+
         try {
             if (typeof responseData === 'string' && (responseData.startsWith('{') || responseData.startsWith('['))) {
                 responseData = JSON.parse(responseData);
@@ -47,7 +57,7 @@ export async function GET(request: Request) {
         return NextResponse.json({
             success: true,
             data: responseData,
-            format: typeof responseData === 'string' && responseData.trim().startsWith('<') ? 'xml' : 'json'
+            format: 'json'
         });
 
     } catch (error: any) {

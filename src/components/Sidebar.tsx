@@ -74,24 +74,41 @@ export const Sidebar: React.FC<SidebarProps> = ({ inputs, updateInput }) => {
             const response = await axios.get('/api/molit/transaction', {
                 params: { lawdCd: regionCode, dealYmd: dealMonth }
             });
-            // Handle various response structures (XML->JSON or Pure JSON)
-            // Typically response.data.data.response.body.items.item
-            const dataRoot = response.data.data?.response?.body || response.data?.response?.body;
 
-            if (dataRoot && dataRoot.items) {
-                const items = dataRoot.items.item;
-                const list = items ? (Array.isArray(items) ? items : [items]) : [];
-                if (list.length > 0) {
-                    setFetchedData(list);
-                } else {
-                    alert('해당 조건의 거래 내역이 없습니다.');
-                    setFetchedData([]);
+            let items: any[] = [];
+
+            if (response.data.format === 'xml') {
+                // Basic XML parsing for MoLIT API if it returns raw XML string
+                const xmlStr = response.data.data;
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlStr, "text/xml");
+                const itemNodes = xmlDoc.getElementsByTagName("item");
+
+                for (let i = 0; i < itemNodes.length; i++) {
+                    const node = itemNodes[i];
+                    const item: any = {};
+                    for (let j = 0; j < node.childNodes.length; j++) {
+                        const child = node.childNodes[j] as Element;
+                        if (child.nodeType === 1) {
+                            item[child.tagName] = child.textContent;
+                        }
+                    }
+                    items.push(item);
                 }
             } else {
-                console.log("No data found or structure mismatch:", response.data);
-                // Fallback if structure is different
+                // Handling JSON response
+                const dataRoot = response.data.data?.response?.body || response.data?.response?.body;
+                if (dataRoot && dataRoot.items) {
+                    const rawItems = dataRoot.items.item;
+                    items = rawItems ? (Array.isArray(rawItems) ? rawItems : [rawItems]) : [];
+                }
+            }
+
+            if (items.length > 0) {
+                setFetchedData(items);
+            } else {
+                alert('해당 조건의 거래 내역이 없습니다.');
                 setFetchedData([]);
-                if (response.data.error) alert(response.data.error);
             }
         } catch (e) {
             console.error(e);
