@@ -331,20 +331,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ inputs, updateInput }) => {
                     </button>
 
                     {fetchedData.length > 0 && (
-                        <div className="mt-2 text-xs space-y-1 max-h-40 overflow-y-auto border border-slate-200 rounded p-2 bg-white">
-                            {fetchedData.slice(0, 5).map((item: any, idx: number) => (
-                                <div key={idx} className="flex justify-between border-b last:border-0 py-1 cursor-pointer hover:bg-slate-50" onClick={() => {
-                                    // Simple auto-fill logic: updates current house price
-                                    const price = parseInt(item['거래금액'].replace(/,/g, ''), 10);
-                                    if (confirm(`${item['아파트']} (${item['전용면적']}㎡) ${price}만원을\n현재 매도 예상가로 설정하시겠습니까?`)) {
-                                        updateInput('currentHousePrice', price);
-                                    }
-                                }}>
-                                    <span>{item['아파트']}</span>
-                                    <span className="font-bold">{item['거래금액'].trim()}만원</span>
-                                </div>
-                            ))}
-                            {fetchedData.length > 5 && <div className="text-center text-slate-400">...</div>}
+                        <div className="mt-2 space-y-2">
+                            <input
+                                type="text"
+                                value={aptFilter}
+                                onChange={(e) => setAptFilter(e.target.value)}
+                                placeholder="결과 내 아파트명 검색..."
+                                className="w-full text-xs border border-slate-300 rounded px-2 py-1 mb-1"
+                            />
+                            <div className="text-xs space-y-1 max-h-40 overflow-y-auto border border-slate-200 rounded p-2 bg-white">
+                                {fetchedData
+                                    .filter(item => item['아파트'].includes(aptFilter))
+                                    .slice(0, 20) // Limit display count
+                                    .map((item: any, idx: number) => (
+                                        <div key={idx} className="flex justify-between border-b last:border-0 py-1 cursor-pointer hover:bg-slate-50" onClick={() => {
+                                            // Simple auto-fill logic: updates current house price
+                                            const price = parseInt(item['거래금액'].replace(/,/g, ''), 10);
+                                            if (confirm(`${item['아파트']} (${item['전용면적']}㎡) ${price}만원을\n현재 매도 예상가로 설정하시겠습니까?`)) {
+                                                updateInput('currentHousePrice', price);
+                                            }
+                                        }}>
+                                            <div className="flex flex-col">
+                                                <span>{item['아파트']}</span>
+                                                <span className="text-slate-400 text-[10px]">{item['전용면적']}㎡ ({Math.round(Number(item['전용면적']) / 3.3)}평)</span>
+                                            </div>
+                                            <span className="font-bold">{item['거래금액'].trim()}만원</span>
+                                        </div>
+                                    ))}
+                                {fetchedData.filter(item => item['아파트'].includes(aptFilter)).length === 0 && (
+                                    <div className="text-center text-slate-400 py-2">검색 결과가 없습니다.</div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
