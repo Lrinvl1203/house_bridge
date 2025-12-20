@@ -81,14 +81,14 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">현재 살고 계신 집을 심사해볼까요?</h2>
-                <p className="text-slate-500">매도 예상 가격과 대출 잔액이 필요합니다.</p>
+                <h2 className="text-2xl font-bold text-white mb-2">현재 살고 계신 집을 심사해볼까요?</h2>
+                <p className="text-gray-400 text-sm">매도 예상 가격과 대출 잔액이 필요합니다.</p>
             </div>
 
             {/* Real-time Search Module */}
-            <Card className="bg-brand-50 border-brand-100">
+            <Card className="bg-surface-dark border-primary/20 shadow-none">
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-brand-800 text-sm flex items-center gap-2">
+                    <CardTitle className="text-primary text-sm flex items-center gap-2">
                         <Search className="w-4 h-4" /> 실거래가로 내 집 시세 찾기 (Optional)
                     </CardTitle>
                 </CardHeader>
@@ -100,12 +100,12 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                                 onFocus={() => setShowRegionList(true)}
                                 onChange={(e) => { setRegionName(e.target.value); setShowRegionList(true); }}
                                 placeholder="지역명 (예: 강남구)"
-                                className="bg-white"
+                                className="bg-surface-dark border-white/10 text-white placeholder:text-gray-500"
                             />
                             {showRegionList && regionName && (
-                                <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                                <div className="absolute z-50 w-full mt-1 bg-surface-dark border border-white/10 rounded-xl shadow-2xl max-h-40 overflow-y-auto">
                                     {filteredRegions.map((r) => (
-                                        <div key={r.code} onClick={() => handleRegionSelect(r.code, r.name)} className="px-3 py-2 hover:bg-slate-50 cursor-pointer text-sm">
+                                        <div key={r.code} onClick={() => handleRegionSelect(r.code, r.name)} className="px-3 py-2 hover:bg-white/5 cursor-pointer text-sm text-gray-300">
                                             {r.name}
                                         </div>
                                     ))}
@@ -118,21 +118,21 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                                 value={dealMonth}
                                 onChange={(e) => setDealMonth(Number(e.target.value))}
                                 placeholder="YYYYMM"
-                                className="bg-white w-24"
+                                className="bg-surface-dark border-white/10 text-white w-24"
                             />
-                            <Button onClick={fetchRealTimePrice} disabled={loading} size="sm" className="flex-1">
+                            <Button onClick={fetchRealTimePrice} disabled={loading} size="sm" className="flex-1 bg-white/10 hover:bg-white/20 text-white border-0">
                                 {loading ? '조회중' : '조회'}
                             </Button>
                         </div>
                     </div>
 
                     {fetchedData.length > 0 && (
-                        <div className="bg-white p-3 rounded-md border border-brand-200 space-y-2">
+                        <div className="bg-black/20 p-3 rounded-xl border border-white/5 space-y-2">
                             <Input
                                 value={aptFilter}
                                 onChange={(e) => setAptFilter(e.target.value)}
                                 placeholder="아파트 이름 검색 (예: 은마)..."
-                                className="text-xs h-8"
+                                className="text-xs h-8 bg-transparent border-white/10"
                             />
                             <div className="max-h-32 overflow-y-auto space-y-1">
                                 {fetchedData
@@ -144,13 +144,13 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                                                 const price = parseInt(item['거래금액'].replace(/,/g, ''), 10);
                                                 if (confirm(`${price}만원으로 설정할까요?`)) updateInput('currentHousePrice', price);
                                             }}
-                                            className="flex justify-between items-center p-2 hover:bg-brand-50 rounded cursor-pointer border-b last:border-0 border-slate-100"
+                                            className="flex justify-between items-center p-2 hover:bg-white/5 rounded-lg cursor-pointer border-b last:border-0 border-white/5"
                                         >
                                             <div className="flex flex-col">
-                                                <span className="text-xs font-medium text-slate-700">{item['아파트']}</span>
-                                                <span className="text-[10px] text-slate-400">{item['전용면적']}㎡ ({item['층']}층)</span>
+                                                <span className="text-xs font-medium text-gray-200">{item['아파트']}</span>
+                                                <span className="text-[10px] text-gray-500">{item['전용면적']}㎡ ({item['층']}층)</span>
                                             </div>
-                                            <span className="text-xs font-bold text-brand-600">{item['거래금액'].trim()}만원</span>
+                                            <span className="text-xs font-bold text-primary">{item['거래금액'].trim()}만원</span>
                                         </div>
                                     ))}
                             </div>
@@ -162,7 +162,7 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-brand-600" />
+                        <Building2 className="w-5 h-5 text-primary" />
                         매도 주택 정보
                     </CardTitle>
                 </CardHeader>
@@ -174,9 +174,9 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                                 type="number"
                                 value={inputs.currentHousePrice}
                                 onChange={(e) => updateInput('currentHousePrice', Number(e.target.value))}
-                                className="text-right text-lg font-bold text-brand-600"
+                                className="text-right text-lg font-bold text-primary border-primary/30 bg-primary/5"
                             />
-                            <span className="text-slate-500 w-8">만원</span>
+                            <span className="text-gray-400 w-8">만원</span>
                         </div>
                     </div>
 
@@ -202,23 +202,23 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                     </div>
 
                     <div className="flex items-center gap-4 pt-2">
-                        <label className="flex items-center gap-2 cursor-pointer bg-slate-50 p-3 rounded-lg flex-1 border border-slate-200">
+                        <label className="flex items-center gap-2 cursor-pointer bg-white/5 p-3 rounded-xl flex-1 border border-white/5 hover:border-primary/50 transition-colors">
                             <input
                                 type="checkbox"
                                 checked={inputs.isOneHouse}
                                 onChange={(e) => updateInput('isOneHouse', e.target.checked)}
-                                className="w-4 h-4 text-brand-600 accent-brand-600"
+                                className="w-4 h-4 text-primary accent-primary bg-transparent border-gray-500"
                             />
-                            <span className="text-sm font-medium">1가구 1주택 (비과세)</span>
+                            <span className="text-sm font-medium text-gray-300">1가구 1주택 (비과세)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer bg-slate-50 p-3 rounded-lg flex-1 border border-slate-200">
+                        <label className="flex items-center gap-2 cursor-pointer bg-white/5 p-3 rounded-xl flex-1 border border-white/5 hover:border-primary/50 transition-colors">
                             <input
                                 type="checkbox"
                                 checked={inputs.isInAdjustedArea}
                                 onChange={(e) => updateInput('isInAdjustedArea', e.target.checked)}
-                                className="w-4 h-4 text-brand-600 accent-brand-600"
+                                className="w-4 h-4 text-primary accent-primary bg-transparent border-gray-500"
                             />
-                            <span className="text-sm font-medium">조정대상지역 포함</span>
+                            <span className="text-sm font-medium text-gray-300">조정대상지역 포함</span>
                         </label>
                     </div>
                 </CardContent>

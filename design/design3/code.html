@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Investment Performance</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f4c025", // Gold
+              "primary-light": "#fce38a",
+              "background-light": "#f8f8f5",
+              "background-dark": "#221e10", // Deep dark brown/black
+              "surface-dark": "#2d2818", // Slightly lighter for cards
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem", 
+              "lg": "1rem", 
+              "xl": "1.5rem", 
+              "2xl": "2rem",
+              "full": "9999px"
+            },
+            backgroundImage: {
+              'gold-gradient': 'linear-gradient(135deg, #f4c025 0%, #ffeaa7 50%, #d4a017 100%)',
+              'gold-text': 'linear-gradient(to bottom, #fff 0%, #f4c025 100%)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom styles for 3D-like effects */
+        .gold-text-effect {
+            background: linear-gradient(to bottom, #ffffff 20%, #f4c025 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 4px 12px rgba(244, 192, 37, 0.3);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bar-3d {
+            background: linear-gradient(180deg, #f4c025 0%, #b88a08 100%);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+        
+        .bar-3d::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Hide scrollbar for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen">
+<div class="relative flex flex-col w-full max-w-md mx-auto min-h-screen overflow-x-hidden pb-10">
+<!-- Background Ambient Glow -->
+<div class="fixed top-0 left-0 right-0 h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2"></div>
+<!-- Top App Bar -->
+<div class="sticky top-0 z-50 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-900 dark:text-white">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">포트폴리오 분석</h2>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-900 dark:text-white">settings</span>
+</button>
+</div>
+<!-- Main Content -->
+<div class="flex flex-col gap-6 px-4 mt-2">
+<!-- Hero Asset Value -->
+<div class="flex flex-col items-center justify-center text-center">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">총 보유 자산</p>
+<h1 class="text-[40px] font-extrabold leading-tight tracking-tight gold-text-effect">
+                    ₩ 2,450,000,000
+                </h1>
+<div class="flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+<span class="material-symbols-outlined text-green-500 text-sm">trending_up</span>
+<span class="text-green-500 text-sm font-bold">+ 15.3%</span>
+<span class="text-gray-500 dark:text-gray-400 text-xs">이번 달</span>
+</div>
+</div>
+<!-- 3D Visualization Area (Simulated) -->
+<div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 group">
+<!-- Background Image representing 3D elements -->
+<div class="absolute inset-0 bg-cover bg-center transform transition-transform duration-1000 hover:scale-105" data-alt="Abstract 3D digital gold and diamond geometric shapes floating in dark void" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAjp_Cuy72nDHES9KF8Jglvqlyd2SUM23Sp4ApraLR1OBhFKdon3tnGwCCUKPcXVZheFP-qmW03bM--At_-DLkZs0cY73p6Nuc1YXFhYM8n-6dGnm2XFsYTsCSTcqkwElUbyZtdp20NGau4GMzbMCuc1rF9GG9StyyZ_GvCabzH4jtkT-eE4KvwwmZ7OlzOwz27jet9Zddg1ZWQ9N0x8Y31o2bDtpE8__C883iEAp3TxLGlDT5Oo9CvBNH6MOGyYACl31Tp6E0yO4aQ');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-80"></div>
+<!-- Floating Labels simulating interactive elements -->
+<div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+<div class="glass-card p-3 rounded-xl flex items-center gap-3 animate-pulse">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white">diamond</span>
+</div>
+<div>
+<p class="text-xs text-gray-300">누적 다이아</p>
+<p class="text-white font-bold text-sm">324개</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Time Period Toggle -->
+<div class="flex p-1 bg-surface-dark/50 dark:bg-white/5 rounded-xl self-center w-full max-w-[320px]">
+<button class="flex-1 py-2 rounded-lg bg-primary shadow-lg shadow-primary/20 text-background-dark font-bold text-sm transition-all">월별</button>
+<button class="flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 font-medium text-sm hover:text-gray-900 dark:hover:text-white transition-all">연도별</button>
+<button class="flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 font-medium text-sm hover:text-gray-900 dark:hover:text-white transition-all">전체</button>
+</div>
+<!-- 3D Chart Section -->
+<div class="glass-card rounded-2xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">bar_chart_4_bars</span>
+                        수익률 추이
+                    </h3>
+<span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-md">Last 6 Months</span>
+</div>
+<div class="flex items-end justify-between h-48 gap-3 w-full">
+<!-- Bar 1 -->
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full relative h-48 flex items-end">
+<div class="w-full bar-3d rounded-t-md opacity-40 group-hover:opacity-60 transition-all duration-300" style="height: 45%;"></div>
+</div>
+<span class="text-xs text-gray-500">8월</span>
+</div>
+<!-- Bar 2 -->
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full relative h-48 flex items-end">
+<div class="w-full bar-3d rounded-t-md opacity-50 group-hover:opacity-70 transition-all duration-300" style="height: 55%;"></div>
+</div>
+<span class="text-xs text-gray-500">9월</span>
+</div>
+<!-- Bar 3 -->
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full relative h-48 flex items-end">
+<div class="w-full bar-3d rounded-t-md opacity-60 group-hover:opacity-80 transition-all duration-300" style="height: 40%;"></div>
+</div>
+<span class="text-xs text-gray-500">10월</span>
+</div>
+<!-- Bar 4 (Highest) -->
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full relative h-48 flex items-end">
+<div class="w-full bar-3d rounded-t-md shadow-[0_0_15px_rgba(244,192,37,0.4)] transition-all duration-300" style="height: 85%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-background-dark text-[10px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                    +12%
+                                </div>
+</div>
+</div>
+<span class="text-xs font-bold text-primary">11월</span>
+</div>
+<!-- Bar 5 -->
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full relative h-48 flex items-end">
+<div class="w-full bar-3d rounded-t-md opacity-70 group-hover:opacity-90 transition-all duration-300" style="height: 65%;"></div>
+</div>
+<span class="text-xs text-gray-500">12월</span>
+</div>
+<!-- Bar 6 -->
+<div class="flex flex-col items-center gap-2 flex-1 group">
+<div class="w-full relative h-48 flex items-end">
+<div class="w-full bar-3d rounded-t-md opacity-80 group-hover:opacity-100 transition-all duration-300" style="height: 72%;"></div>
+</div>
+<span class="text-xs text-gray-500">1월</span>
+</div>
+</div>
+</div>
+<!-- Asset Allocation (Donut Chart representation) -->
+<div class="grid grid-cols-2 gap-4">
+<!-- 3D Donut Visual -->
+<div class="glass-card rounded-2xl p-5 flex flex-col justify-between items-center relative overflow-hidden min-h-[160px]">
+<div class="absolute inset-0 flex items-center justify-center opacity-30">
+<div class="w-24 h-24 rounded-full border-[12px] border-primary border-t-transparent animate-spin duration-[3s]"></div>
+</div>
+<div class="z-10 text-center mt-2">
+<p class="text-2xl font-bold text-white">Top 1</p>
+<p class="text-primary text-sm font-medium">부동산</p>
+</div>
+<div class="z-10 mt-4 w-full">
+<div class="flex justify-between items-center text-xs text-gray-400 mb-1">
+<span>비중</span>
+<span class="text-white">65%</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<!-- Asset Breakdown List -->
+<div class="flex flex-col gap-3">
+<div class="glass-card rounded-xl p-3 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-indigo-400">apartment</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-white font-bold text-sm truncate">부동산</p>
+<p class="text-indigo-400 text-xs">₩ 1.6B</p>
+</div>
+</div>
+<div class="glass-card rounded-xl p-3 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-400">currency_bitcoin</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-white font-bold text-sm truncate">암호화폐</p>
+<p class="text-orange-400 text-xs">₩ 500M</p>
+</div>
+</div>
+<div class="glass-card rounded-xl p-3 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">savings</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-white font-bold text-sm truncate">금/현금</p>
+<p class="text-primary text-xs">₩ 350M</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Goal Progress Bar -->
+<div class="glass-card rounded-2xl p-5 relative overflow-hidden">
+<!-- Decorative background elements -->
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/20 blur-3xl rounded-full"></div>
+<div class="flex justify-between items-end mb-4 relative z-10">
+<div>
+<p class="text-gray-400 text-xs mb-1 font-medium tracking-wide">ULTIMATE GOAL</p>
+<h3 class="text-white text-lg font-bold leading-tight">강남 펜트하우스 입성</h3>
+</div>
+<div class="text-right">
+<span class="text-3xl font-extrabold text-primary">75</span>
+<span class="text-sm font-bold text-primary">%</span>
+</div>
+</div>
+<div class="relative w-full h-4 bg-gray-800 rounded-full overflow-hidden z-10 box-border border border-white/5">
+<div class="absolute top-0 left-0 h-full bg-gold-gradient w-[75%] rounded-full shadow-[0_0_10px_rgba(244,192,37,0.5)]">
+<!-- Shimmer effect -->
+<div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+<p class="text-right text-xs text-gray-500 mt-2 relative z-10">다음 등급까지 ₩ 450,000,000 남음</p>
+</div>
+<!-- Stats Grid (Summary) -->
+<div class="grid grid-cols-2 gap-4 pb-6">
+<div class="glass-card p-4 rounded-xl flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-gray-400 text-lg">calendar_month</span>
+<span class="text-xs text-gray-400">이번 달 배당금</span>
+</div>
+<p class="text-white font-bold text-lg">₩ 12,500,000</p>
+</div>
+<div class="glass-card p-4 rounded-xl flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-gray-400 text-lg">hotel_class</span>
+<span class="text-xs text-gray-400">나의 투자 랭킹</span>
+</div>
+<p class="text-white font-bold text-lg">상위 1.2%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Shimmer Animation Keyframes -->
+<style>
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) skewX(-12deg); }
+            100% { transform: translateX(200%) skewX(-12deg); }
+        }
+    </style>
+</body></html>

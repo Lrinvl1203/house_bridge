@@ -13,14 +13,14 @@ export const FinancialStep: React.FC<Props> = ({ inputs, updateInput }) => {
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">기본 재무 상태를 알려주세요</h2>
-                <p className="text-slate-500">정확한 분석을 위해 현재 소득과 자산을 입력해주세요.</p>
+                <h2 className="text-2xl font-bold text-white mb-2">기본 재무 상태를 알려주세요</h2>
+                <p className="text-gray-400 text-sm">정확한 분석을 위해 현재 소득과 자산을 입력해주세요.</p>
             </div>
 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <Wallet className="w-5 h-5 text-brand-600" />
+                        <Wallet className="w-5 h-5 text-primary" />
                         소득 및 자산
                     </CardTitle>
                 </CardHeader>
@@ -35,9 +35,9 @@ export const FinancialStep: React.FC<Props> = ({ inputs, updateInput }) => {
                                 onChange={(e) => updateInput('annualIncome', Number(e.target.value))}
                                 className="text-right text-lg font-semibold"
                             />
-                            <span className="text-slate-500 w-8">만원</span>
+                            <span className="text-gray-400 w-8">만원</span>
                         </div>
-                        <p className="text-xs text-slate-400">DSR 계산의 기준이 됩니다.</p>
+                        <p className="text-xs text-gray-500">DSR 계산의 기준이 됩니다.</p>
                     </div>
 
                     <div className="space-y-2">

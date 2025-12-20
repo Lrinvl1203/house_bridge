@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wealth Journey Welcome</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f4c025",
+              "background-light": "#f8f8f5",
+              "background-dark": "#1a1814", /* Adjusted to be slightly deeper for the premium feel */
+              "surface-dark": "#2a2720",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+            backgroundImage: {
+              'gold-gradient': 'linear-gradient(135deg, #f4c025 0%, #b38b15 100%)',
+              'dark-glow': 'radial-gradient(circle at center, rgba(244, 192, 37, 0.15) 0%, rgba(26, 24, 20, 0) 70%)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom shimmer animation for the button */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .animate-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        /* Slow floating animation for the hero image */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-white font-display antialiased overflow-x-hidden selection:bg-primary selection:text-background-dark">
+<div class="relative flex h-full min-h-screen w-full flex-col justify-between">
+<!-- Background Ambient Glow -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-primary/5 blur-[120px] rounded-full"></div>
+</div>
+<!-- Top Navigation Area (Minimal) -->
+<div class="relative z-10 w-full px-6 pt-12 pb-4 flex justify-between items-center">
+<!-- Brand / Logo placeholder -->
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-yellow-700 flex items-center justify-center text-background-dark font-bold text-lg">
+<span class="material-symbols-outlined text-[20px]">diamond</span>
+</div>
+<span class="text-lg font-bold tracking-tight text-white/90">RichSwitch</span>
+</div>
+<!-- Skip button -->
+<button class="text-sm font-medium text-white/60 hover:text-white transition-colors">
+                Skip
+            </button>
+</div>
+<!-- Main Content Area: Hero Visual -->
+<div class="relative z-10 flex-1 flex flex-col items-center justify-center w-full px-6">
+<!-- 3D Visual Container -->
+<div class="relative w-full max-w-[380px] aspect-square flex items-center justify-center mb-8">
+<!-- Center Glow -->
+<div class="absolute inset-0 bg-dark-glow blur-2xl opacity-80"></div>
+<!-- Main Image -->
+<div class="relative w-full h-full animate-float z-10">
+<img alt="3D render of floating gold coins and abstract geometric shapes on dark background" class="w-full h-full object-contain drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqspS9OtWEjV8XpZHJnTCIE9AW6ltiqIDU8e19EF7Jm7X4lmJC5b9A3vEbFo-MScSiliaS6N9eQbhx8bXh7NESBQjmwsVwRZfNec1i-EHcWJ1-YdLr61j_rfT9p04eqbw7MRU8RZI74l8INFCOy6Phx41vecgVPs6fb_5SawYZ-FOSyRuX0oLYeT-UKe0Dautq_2b2p5S7DhTJJTy-ZaBFxiageP_L6VfzK1sOpSuAAQoY4gS2KtrqIcNbPDnAVWc7w8AyCE-QDn10"/>
+</div>
+<!-- Floating Elements (Decorative Icons) -->
+<div class="absolute top-[10%] right-[10%] bg-surface-dark/80 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-xl animate-bounce" style="animation-duration: 4s;">
+<span class="material-symbols-outlined text-primary text-3xl">currency_bitcoin</span>
+</div>
+<div class="absolute bottom-[20%] left-[5%] bg-surface-dark/80 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-xl animate-bounce" style="animation-duration: 5s; animation-delay: 1s;">
+<span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
+</div>
+</div>
+</div>
+<!-- Bottom Content Sheet -->
+<div class="relative z-10 w-full bg-gradient-to-t from-background-dark via-background-dark to-transparent pt-12 pb-8 px-6">
+<!-- Headline Text -->
+<div class="text-center mb-6 space-y-3">
+<div class="inline-flex items-center px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-bold tracking-wide uppercase mb-2">
+                    Premium Service
+                </div>
+<h1 class="text-white tracking-tight text-[32px] leading-[1.15] font-extrabold">
+                    부자가 되는<br/>
+<span class="text-primary">가장 빠른 환승</span>
+</h1>
+<p class="text-white/60 text-base font-medium leading-relaxed max-w-xs mx-auto">
+                    부동산 갈아타기로 시작하는 부의 추월차선.<br/>
+                    지금 바로 당신의 여정을 시작하세요.
+                </p>
+</div>
+<!-- Action Area -->
+<div class="w-full flex flex-col gap-4 max-w-md mx-auto">
+<!-- Primary Button -->
+<button class="group relative w-full h-14 bg-primary text-background-dark text-lg font-bold rounded-xl shadow-[0_0_20px_rgba(244,192,37,0.3)] hover:shadow-[0_0_30px_rgba(244,192,37,0.5)] transition-all transform active:scale-[0.98] overflow-hidden flex items-center justify-center gap-2">
+<div class="animate-shimmer"></div>
+<span class="relative z-10">여정 시작하기</span>
+<span class="material-symbols-outlined relative z-10 text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<!-- Secondary Link -->
+<div class="text-center">
+<span class="text-sm text-white/40">이미 계정이 있으신가요? </span>
+<button class="text-sm text-primary font-semibold hover:underline decoration-primary/50 underline-offset-4">
+                        로그인
+                    </button>
+</div>
+</div>
+<!-- Bottom Safe Area Spacer -->
+<div class="h-6 w-full"></div>
+</div>
+</div>
+</body></html>

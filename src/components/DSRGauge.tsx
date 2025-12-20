@@ -39,13 +39,13 @@ export const DSRGauge: React.FC<Props> = ({ dsr }) => {
                         dataKey="value"
                     >
                         <Cell fill={color} />
-                        <Cell fill="#e2e8f0" />
+                        <Cell fill="#333" />
                     </Pie>
                 </PieChart>
             </ResponsiveContainer>
             <div className="absolute bottom-0 text-center">
                 <div className="text-3xl font-bold" style={{ color }}>{dsr.toFixed(1)}%</div>
-                <div className="text-xs text-slate-500">DSR (총부채원리금상환비율)</div>
+                <div className="text-xs text-gray-400">DSR (총부채원리금상환비율)</div>
             </div>
         </div>
     );

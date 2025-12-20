@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 
 // --- Card Component ---
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm", className)} {...props} />
+    <div ref={ref} className={cn("rounded-2xl border border-white/10 bg-surface-dark shadow-xl backdrop-blur-sm", className)} {...props} />
 ))
 Card.displayName = "Card"
 
@@ -14,32 +14,32 @@ const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 CardHeader.displayName = "CardHeader"
 
 const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props} />
+    <h3 ref={ref} className={cn("text-lg font-bold leading-none tracking-tight text-white", className)} {...props} />
 ))
 CardTitle.displayName = "CardTitle"
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+    <div ref={ref} className={cn("p-6 pt-0 text-gray-300", className)} {...props} />
 ))
 CardContent.displayName = "CardContent"
 
 // --- Button Component ---
 const buttonVariants = cva(
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center rounded-xl text-sm font-bold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
     {
         variants: {
             variant: {
-                default: "bg-brand-600 text-slate-50 hover:bg-brand-600/90",
-                destructive: "bg-red-500 text-slate-50 hover:bg-red-500/90",
-                outline: "border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900",
-                secondary: "bg-slate-100 text-slate-900 hover:bg-slate-100/80",
-                ghost: "hover:bg-slate-100 hover:text-slate-900",
-                link: "text-slate-900 underline-offset-4 hover:underline",
+                default: "bg-gradient-to-r from-primary to-brand-600 text-black shadow-[0_0_15px_rgba(244,192,37,0.3)] hover:shadow-[0_0_25px_rgba(244,192,37,0.5)] hover:brightness-110",
+                destructive: "bg-red-900/50 text-red-200 hover:bg-red-900/70 border border-red-900",
+                outline: "border border-white/10 bg-transparent hover:bg-white/5 text-white hover:text-primary hover:border-primary/50",
+                secondary: "bg-surface-dark text-white hover:bg-surface-dark/80 border border-white/5",
+                ghost: "hover:bg-white/5 hover:text-primary",
+                link: "text-primary underline-offset-4 hover:underline",
             },
             size: {
-                default: "h-10 px-4 py-2",
-                sm: "h-9 rounded-md px-3",
-                lg: "h-11 rounded-md px-8",
+                default: "h-12 px-6 py-2",
+                sm: "h-9 rounded-lg px-3",
+                lg: "h-14 rounded-xl px-8 text-base",
                 icon: "h-10 w-10",
             },
         },
@@ -69,7 +69,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
         <input
             type={type}
             className={cn(
-                "flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                "flex h-12 w-full rounded-xl border border-white/10 bg-surface-dark/50 px-4 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
                 className
             )}
             ref={ref}
@@ -81,16 +81,16 @@ Input.displayName = "Input"
 
 // --- Label Component ---
 const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(({ className, ...props }, ref) => (
-    <label ref={ref} className={cn("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", className)} {...props} />
+    <label ref={ref} className={cn("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-400", className)} {...props} />
 ))
 Label.displayName = "Label"
 
-// --- Slider Component (Simplified) ---
+// --- Slider Component ---
 const Slider = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(({ className, ...props }, ref) => (
     <input
         type="range"
         className={cn(
-            "w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600",
+            "w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary",
             className
         )}
         ref={ref}

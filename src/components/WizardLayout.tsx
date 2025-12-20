@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSimulator } from '../hooks/useSimulator';
 import { Stepper } from './ui/Stepper';
 import { Button } from './ui/base';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Diamond } from 'lucide-react';
 
 import { FinancialStep } from './steps/FinancialStep';
 import { SellingStep } from './steps/SellingStep';
@@ -48,35 +48,41 @@ export const WizardLayout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-24 md:pb-10">
+        <div className="min-h-screen bg-background-dark pb-24 md:pb-10 relative">
+            {/* Ambient Background Glow */}
+            <div className="fixed top-0 left-0 w-full h-[500px] bg-primary/5 blur-[120px] pointer-events-none rounded-full -translate-y-1/2 z-0"></div>
+
             {/* Header */}
-            <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-                <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-                    <h1 className="font-bold text-lg text-slate-800">Real Estate Bridge</h1>
+            <header className="sticky top-0 z-40 bg-background-dark/80 backdrop-blur-md border-b border-white/5">
+                <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <Diamond className="text-primary w-5 h-5 fill-primary/20" />
+                        <h1 className="font-bold text-lg text-white tracking-wide">RichSwitch</h1>
+                    </div>
                     {currentStep < 4 && (
-                        <span className="text-xs font-medium text-slate-400">Step {currentStep} of 3</span>
+                        <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">Step {currentStep}/3</span>
                     )}
                 </div>
             </header>
 
-            <main className="max-w-md mx-auto px-4 pt-4 pb-32">
+            <main className="max-w-md mx-auto px-4 pt-6 pb-32 relative z-10">
                 {currentStep < 4 && <Stepper steps={STEPS} currentStep={currentStep} />}
 
-                <div className="mt-4">
+                <div className="mt-6">
                     {renderStep()}
                 </div>
             </main>
 
             {/* Bottom Navigation (Sticky) */}
             {currentStep < 4 && (
-                <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 z-50 safe-area-bottom">
+                <div className="fixed bottom-0 left-0 w-full bg-background-dark/90 backdrop-blur-xl border-t border-white/5 p-4 z-50 safe-area-bottom">
                     <div className="max-w-md mx-auto flex gap-3">
                         {currentStep > 1 && (
-                            <Button variant="outline" onClick={handleBack} className="flex-1 h-12 text-base">
+                            <Button variant="secondary" onClick={handleBack} className="flex-1 h-14 text-base">
                                 <ChevronLeft size={18} className="mr-1" /> 이전
                             </Button>
                         )}
-                        <Button onClick={handleNext} className="flex-[2] h-12 text-base shadow-lg shadow-brand-200">
+                        <Button onClick={handleNext} className="flex-[2] h-14 text-base shadow-gold-glow animate-pulse-subtle">
                             {currentStep === 3 ? '결과 보기' : '다음'} <ChevronRight size={18} className="ml-1" />
                         </Button>
                     </div>

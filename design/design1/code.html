@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Asset Status Dashboard</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f4c025",
+                        "primary-light": "#ffe066",
+                        "primary-dark": "#b38600",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#0d0d0d", 
+                        "surface-dark": "#1a1a1a",
+                        "surface-glass": "rgba(26, 26, 26, 0.6)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                    },
+                    backgroundImage: {
+                        'gold-gradient': 'linear-gradient(135deg, #f4c025 0%, #ffe066 50%, #b38600 100%)',
+                        'dark-gradient': 'linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%)',
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 15px rgba(244, 192, 37, 0.3)',
+                        'card-depth': '0 10px 30px -10px rgba(0, 0, 0, 0.5)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #f4c025 20%, #fff 50%, #f4c025 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-black">
+<div class="relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-x-hidden shadow-2xl border-x border-white/5">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between p-5 bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full bg-surface-dark/50 text-white hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[20px]">diamond</span>
+<span class="text-sm font-bold tracking-widest text-white/90">VAULT</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="relative flex items-center justify-center size-10 rounded-full bg-surface-dark/50 text-white hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2.5 right-2.5 size-2 bg-red-500 rounded-full border-2 border-surface-dark"></span>
+</button>
+</div>
+</header>
+<!-- Main Scrollable Content -->
+<main class="flex-1 flex flex-col pb-24">
+<!-- Hero Section: Total Wealth -->
+<section class="flex flex-col items-center justify-center pt-8 pb-10 px-6 relative">
+<!-- Background decorative glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="z-10 text-center">
+<p class="text-[#888] text-sm font-medium tracking-wide uppercase mb-2 flex items-center justify-center gap-1">
+                        Total Net Worth 
+                        <span class="material-symbols-outlined text-xs text-[#888]">visibility</span>
+</p>
+<h1 class="text-gradient-gold text-[40px] font-extrabold leading-tight tracking-tight mb-2">
+                        ₩ 1,520,000,000
+                    </h1>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 rounded-full border border-green-500/20">
+<span class="material-symbols-outlined text-green-400 text-sm font-bold">trending_up</span>
+<span class="text-green-400 text-xs font-bold">+12.5% (₩ 1.2억)</span>
+</div>
+</div>
+</section>
+<!-- 3D Carousel Section -->
+<section class="w-full mb-8 pl-6">
+<div class="flex items-center justify-between pr-6 mb-4">
+<h3 class="text-lg font-bold text-white">My Assets</h3>
+<button class="text-xs text-primary font-medium hover:text-primary-light">View All</button>
+</div>
+<div class="flex w-full overflow-x-auto gap-4 pb-4 pr-6 hide-scrollbar snap-x">
+<!-- Card 1: Real Estate -->
+<div class="snap-center shrink-0 w-[240px] h-[320px] rounded-3xl relative overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="3D render of a futuristic luxury golden house floating in dark space" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvz28SBw8_BMjHi3tOcSPITWJwc_cxtW_loolk2sTJnyKnqOd8lOPMPsL2lSW__3u3tBWFFPPebkGDm516FMUsKhpAWy-4dPlOQCvnm4AickG6NwU9_CntGBP2TpGCTET2j6dR3bstynNd27dxqu_k5UnIa4zoEyBcFSUUbIu6LMflq8sCKZc7pnZdSNwC6MdZkdhVI2sFFVYUSCukgjZNYYmCc312rgarFL43W_Vq3QMk7TT8mxNSG9S-rjHiWxHq-rhwU9hCvJlu');">
+<div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/90"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5 flex flex-col">
+<div class="size-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 border border-white/10">
+<span class="material-symbols-outlined text-white">apartment</span>
+</div>
+<h4 class="text-white text-xl font-bold mb-1">Real Estate</h4>
+<p class="text-white/60 text-sm mb-4">Gangnam Apt</p>
+<div class="flex items-end justify-between">
+<span class="text-white font-bold text-lg">₩ 12.5억</span>
+<span class="text-green-400 text-xs font-medium bg-green-400/10 px-2 py-1 rounded">+5.2%</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Crypto -->
+<div class="snap-center shrink-0 w-[240px] h-[320px] rounded-3xl relative overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="3D render of a shiny gold bitcoin floating with neon lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBz5upG6yGnY4ccBZvvct6jPPEwhbFA2UC3woN_eFgQIoBYtIp8VzoT0cXfqZ8oJ9A0l_wK29EpAm32YoshCe3GJoJvCy_7J-KvQSskwYkzV8uhRaWVqm2_UfqfbBMn_wx7IJNL3vyjiG5t9D9MzpBCECAj3JQH6_ea32mQkD13KKrsEQLmXgLSPVAOuyVKaSmwfMJCsZxSdglMZudytEuTyY3BtIb3W8sKBSi5wRU4TeB9lputYEhub7h5lzgAOqVcPaSe9_jcWD2l');">
+<div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/90"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5 flex flex-col">
+<div class="size-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 border border-white/10">
+<span class="material-symbols-outlined text-white">currency_bitcoin</span>
+</div>
+<h4 class="text-white text-xl font-bold mb-1">Crypto</h4>
+<p class="text-white/60 text-sm mb-4">Bitcoin &amp; Alt</p>
+<div class="flex items-end justify-between">
+<span class="text-white font-bold text-lg">₩ 1.8억</span>
+<span class="text-green-400 text-xs font-medium bg-green-400/10 px-2 py-1 rounded">+24.8%</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Gold -->
+<div class="snap-center shrink-0 w-[240px] h-[320px] rounded-3xl relative overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="3D render of stacked gold bars reflecting light" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOZzb5ygAAWke4-waU8YB91WNPYfWloeNj1vdMy7Qj9UvHix2gFCtx1tv-elgoL20gWBVDhZydsCDaueXaW9gzPRYrzjbI3ZugxPNetCGv98o8l0RRKj6yxUabnsuJUqV_lej92wYQOkAVn32aJ02zRjCd_7CTk-AW2-4xqmL6uYseIN-OluE_Te0TviqFRp9qZB9al2K2jiQ_VB1rR8V9_dLCf5MJDm0IPTYnWSWLHwEVIL4D9JzhY-_-MShCRZtYl6kSCmWQ9w4t');">
+<div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/90"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5 flex flex-col">
+<div class="size-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 border border-white/10">
+<span class="material-symbols-outlined text-white">account_balance</span>
+</div>
+<h4 class="text-white text-xl font-bold mb-1">Commodities</h4>
+<p class="text-white/60 text-sm mb-4">Gold &amp; Silver</p>
+<div class="flex items-end justify-between">
+<span class="text-white font-bold text-lg">₩ 0.9억</span>
+<span class="text-red-400 text-xs font-medium bg-red-400/10 px-2 py-1 rounded">-1.2%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Wealth Ladder Progress -->
+<section class="px-6 mb-8">
+<div class="glass-panel p-5 rounded-2xl">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-white font-bold text-base flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">military_tech</span>
+                            Wealth Tier: Platinum
+                        </h3>
+<span class="text-primary text-sm font-bold">82%</span>
+</div>
+<div class="w-full bg-surface-dark h-3 rounded-full overflow-hidden relative border border-white/5">
+<div class="absolute top-0 left-0 h-full bg-gold-gradient w-[82%] rounded-full shadow-gold-glow"></div>
+</div>
+<p class="text-right text-xs text-white/40 mt-2">Next: Diamond Tier (₩ 20억)</p>
+</div>
+</section>
+<!-- Detailed Breakdown List -->
+<section class="px-6 flex-1">
+<h3 class="text-lg font-bold text-white mb-4">Portfolio Breakdown</h3>
+<div class="flex flex-col gap-3">
+<!-- List Item 1 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">home_work</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm">Real Estate</h4>
+<p class="text-white/40 text-xs">82.2% of Portfolio</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white font-bold text-sm">₩ 1,250M</p>
+<div class="h-8 w-20 ml-auto flex items-center justify-end">
+<!-- Simple CSS Sparkline -->
+<svg fill="none" height="20" viewbox="0 0 60 20" width="60" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 15L15 10L30 14L45 5L59 2" stroke="#4ade80" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">currency_bitcoin</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm">Crypto Assets</h4>
+<p class="text-white/40 text-xs">11.8% of Portfolio</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white font-bold text-sm">₩ 180M</p>
+<div class="h-8 w-20 ml-auto flex items-center justify-end">
+<svg fill="none" height="20" viewbox="0 0 60 20" width="60" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 10L15 15L30 5L45 8L59 1" stroke="#4ade80" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">savings</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm">Gold &amp; Cash</h4>
+<p class="text-white/40 text-xs">6.0% of Portfolio</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white font-bold text-sm">₩ 90M</p>
+<div class="h-8 w-20 ml-auto flex items-center justify-end">
+<svg fill="none" height="20" viewbox="0 0 60 20" width="60" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 5L15 8L30 12L45 12L59 15" stroke="#f87171" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="absolute bottom-24 right-6 size-14 rounded-full bg-gold-gradient shadow-gold-glow flex items-center justify-center text-black z-40 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl font-bold">add</span>
+</button>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full max-w-md bg-background-dark/90 backdrop-blur-xl border-t border-white/5 pb-6 pt-3 px-6 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined font-semibold">dashboard</span>
+<span class="text-[10px] font-bold">Vault</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">pie_chart</span>
+<span class="text-[10px] font-medium">Portfolio</span>
+</button>
+<div class="w-12"></div> <!-- Spacer for FAB visual balance if needed, or just standard spacing -->
+<button class="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">candlestick_chart</span>
+<span class="text-[10px] font-medium">Market</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+</div>
+</body></html>
