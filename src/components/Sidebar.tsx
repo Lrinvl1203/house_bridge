@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { SimulatorInputs } from '../types';
-import { ChevronDown, ChevronUp, Calculator, Building2, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronUp, Calculator, Building2, Wallet, Search } from 'lucide-react';
 import axios from 'axios';
+import { KOREA_REGIONS } from '../data/regions';
 
 interface SidebarProps {
     inputs: SimulatorInputs;
@@ -64,7 +65,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ inputs, updateInput }) => {
     const toggle = (key: keyof typeof sections) => setSections(p => ({ ...p, [key]: !p[key] }));
 
     const [regionCode, setRegionCode] = useState(11680);
+    const [regionName, setRegionName] = useState('서울특별시 강남구');
+    const [showRegionList, setShowRegionList] = useState(false);
     const [dealMonth, setDealMonth] = useState(202401);
+
+    const filteredRegions = KOREA_REGIONS.filter(r => r.name.includes(regionName) || r.code.includes(regionName));
+
+    const handleRegionSelect = (code: string, name: string) => {
+        setRegionCode(Number(code));
+        setRegionName(name);
+        setShowRegionList(false);
+    };
+
     const [loading, setLoading] = useState(false);
     const [fetchedData, setFetchedData] = useState<any[]>([]);
 
@@ -264,13 +276,44 @@ export const Sidebar: React.FC<SidebarProps> = ({ inputs, updateInput }) => {
                         법정동코드와 계약월을 입력하여 최근 실거래가를 조회합니다.
                     </div>
 
-                    <NumberInput
-                        label="법정동코드 (예: 11680 (강남))"
-                        value={regionCode}
-                        onChange={(v: number) => setRegionCode(v)}
-                        unit=""
-                        step={1}
-                    />
+                    <div className="relative">
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-slate-500">지역 검색 (예: 강남구, 11680)</label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={regionName}
+                                    onFocus={() => setShowRegionList(true)}
+                                    onChange={(e) => {
+                                        setRegionName(e.target.value);
+                                        setShowRegionList(true);
+                                    }}
+                                    className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 pr-8"
+                                    placeholder="지역명 검색"
+                                />
+                                <Search size={14} className="absolute right-3 top-2.5 text-slate-400" />
+                            </div>
+                        </div>
+
+                        {showRegionList && regionName && (
+                            <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                {filteredRegions.length > 0 ? (
+                                    filteredRegions.map((region) => (
+                                        <button
+                                            key={region.code}
+                                            onClick={() => handleRegionSelect(region.code, region.name)}
+                                            className="w-full text-left px-3 py-2 text-sm hover:bg-brand-50 hover:text-brand-700 block"
+                                        >
+                                            <span className="font-semibold text-slate-700">{region.name}</span>
+                                            <span className="text-xs text-slate-400 ml-2">({region.code})</span>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <div className="px-3 py-2 text-xs text-slate-400">검색 결과가 없습니다</div>
+                                )}
+                            </div>
+                        )}
+                    </div>
                     <NumberInput
                         label="계약월 (YYYYMM)"
                         value={dealMonth}
