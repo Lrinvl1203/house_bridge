@@ -2,9 +2,11 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Input, Label, Slider } from '../ui/base';
 import { Wallet } from 'lucide-react';
 
+import { SimulatorInputs } from '../../types';
+
 interface Props {
-    inputs: any;
-    updateInput: (key: string, value: any) => void;
+    inputs: SimulatorInputs;
+    updateInput: (key: keyof SimulatorInputs, value: any) => void;
 }
 
 export const FinancialStep: React.FC<Props> = ({ inputs, updateInput }) => {

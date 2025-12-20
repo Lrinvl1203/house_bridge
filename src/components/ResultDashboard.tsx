@@ -5,10 +5,12 @@ import { WaterfallChart } from './WaterfallChart';
 import { CheckCircle, AlertTriangle, RefreshCw, Pencil } from 'lucide-react';
 import { Slider, Label } from './ui/base';
 
+import { SimulatorInputs } from '../types';
+
 interface Props {
     results: any;
-    inputs: any;
-    updateInput: (key: string, value: any) => void;
+    inputs: SimulatorInputs;
+    updateInput: (key: keyof SimulatorInputs, value: any) => void;
     onRestart: () => void;
 }
 

@@ -4,9 +4,11 @@ import { Building2, Search, CheckCircle2 } from 'lucide-react';
 import { KOREA_REGIONS } from '../../data/regions';
 import axios from 'axios';
 
+import { SimulatorInputs } from '../../types';
+
 interface Props {
-    inputs: any;
-    updateInput: (key: string, value: any) => void;
+    inputs: SimulatorInputs;
+    updateInput: (key: keyof SimulatorInputs, value: any) => void;
 }
 
 export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
