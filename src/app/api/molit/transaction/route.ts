@@ -61,7 +61,15 @@ export async function GET(request: Request) {
         });
 
     } catch (error: any) {
-        console.error('API Error:', error.message);
-        return NextResponse.json({ error: 'Upstream API Error', details: error.message }, { status: 500 });
+        console.error('API Error Details:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        return NextResponse.json({
+            error: 'Upstream API Error',
+            details: error.message, // Be careful not to expose sensitive info in prod, but helpful for now
+            upstreamStatus: error.response?.status
+        }, { status: 500 });
     }
 }
