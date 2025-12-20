@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Input, Label, Slider } from './ui/base';
+import { Card, CardHeader, CardTitle, CardContent, Input, Label, Slider } from '../ui/base';
 import { Wallet } from 'lucide-react';
 
 interface Props {

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from '../ui/base';
-import { DSRGauge } from '../DSRGauge';
-import { WaterfallChart } from '../WaterfallChart';
+import { Card, CardContent } from './ui/base';
+import { DSRGauge } from './DSRGauge';
+import { WaterfallChart } from './WaterfallChart';
 import { CheckCircle, AlertTriangle, RefreshCw, Pencil } from 'lucide-react';
-import { Slider, Label } from '../ui/base';
+import { Slider, Label } from './ui/base';
 
 interface Props {
     results: any;
