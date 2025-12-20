@@ -87,13 +87,17 @@ export const Dashboard: React.FC<Props> = ({ inputs, results, updateInput }) => 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <h3 className="text-lg font-bold text-slate-800 mb-6">자금 흐름 분석 (Waterfall)</h3>
-                    <WaterfallChart data={results} />
+                    <div className="h-64 w-full">
+                        <WaterfallChart data={results} />
+                    </div>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
                     <h3 className="text-lg font-bold text-slate-800 mb-2">DSR 안전도</h3>
                     <p className="text-sm text-slate-500 mb-6 text-center">40% 초과 시 대출이 제한될 수 있습니다</p>
-                    <DSRGauge dsr={results.dsrRatio} />
+                    <div className="h-48 w-full flex items-center justify-center">
+                        <DSRGauge dsr={results.dsrRatio} />
+                    </div>
 
                     <div className="w-full mt-6 space-y-2">
                         <div className="flex justify-between text-sm">
