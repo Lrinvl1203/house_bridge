@@ -59,7 +59,7 @@ export const WizardLayout = () => {
                 </div>
             </header>
 
-            <main className="max-w-md mx-auto px-4 pt-4">
+            <main className="max-w-md mx-auto px-4 pt-4 pb-32">
                 {currentStep < 4 && <Stepper steps={STEPS} currentStep={currentStep} />}
 
                 <div className="mt-4">
@@ -77,7 +77,7 @@ export const WizardLayout = () => {
                             </Button>
                         )}
                         <Button onClick={handleNext} className="flex-[2] h-12 text-base shadow-lg shadow-brand-200">
-                            {currentStep === 3 ? '결과 분석하기' : '다음'} <ChevronRight size={18} className="ml-1" />
+                            {currentStep === 3 ? '결과 보기' : '다음'} <ChevronRight size={18} className="ml-1" />
                         </Button>
                     </div>
                 </div>

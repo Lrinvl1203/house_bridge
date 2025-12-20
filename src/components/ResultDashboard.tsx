@@ -27,7 +27,7 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 pb-20">
             <div className="text-center mb-6">
                 <h2 className="text-xl font-medium text-slate-600">최종 분석 결과</h2>
-                <div className={`text-4xl font-extrabold mt-2 ${isPossible ? 'text-green-600' : 'text-red-600'}`}>
+                <div className={`text-3xl lg:text-4xl font-extrabold mt-2 ${isPossible ? 'text-green-600' : 'text-red-600'}`}>
                     {isPossible ? '자금 여유' : '자금 부족'}
                 </div>
                 <div className="text-lg mt-1 font-semibold text-slate-800">
@@ -39,7 +39,7 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
             <Card className="bg-slate-50 border-slate-200">
                 <CardContent className="pt-6">
                     <div className="flex justify-between items-center mb-4 cursor-pointer" onClick={() => setEditMode(!editMode)}>
-                        <h3 className="font-semibold text-slate-700 flex items-center gap-2">
+                        <h3 className="font-medium text-base text-slate-700 flex items-center gap-2">
                             <Pencil size={16} /> 시뮬레이션 조정 (Quick Edit)
                         </h3>
                         <span className="text-xs text-brand-600">{editMode ? '접기' : '펼치기'}</span>
