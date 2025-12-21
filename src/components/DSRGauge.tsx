@@ -1,51 +1,51 @@
 'use client';
 
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 interface Props {
     dsr: number;
 }
 
 export const DSRGauge: React.FC<Props> = ({ dsr }) => {
-    const value = Math.min(dsr, 100);
-    // Half doughnut logic
-    const data = [
-        { name: 'DSR', value: value },
-        { name: 'Remaining', value: 100 - value }
-    ];
+    // Clamp value between 0 and 100 for the visual width
+    const percentage = Math.min(Math.max(dsr, 0), 100);
 
+    // Determine color based on DSR value
+    // DSR <= 40 is generally safe (Green)
+    // 40 < DSR <= 50 is caution (Yellow)
+    // DSR > 50 is danger/high risk (Red) - or stricly > 40 is bad depending on strictness
+    // Using simple logic: <= 40 Green, <= 50 Yellow, > 50 Red.
+    // However, user image showed 40.6% as Danger. So maybe strict 40 limit.
     const getColor = (val: number) => {
-        if (val <= 40) return '#22c55e'; // Green
-        if (val <= 50) return '#eab308'; // Yellow
-        return '#ef4444'; // Red
+        if (val <= 40) return 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]';
+        if (val <= 50) return 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]';
+        return 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
     };
 
-    const color = getColor(value);
+    const colorClass = getColor(dsr);
 
     return (
-        <div className="relative w-full h-40 flex flex-col items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                    <Pie
-                        data={data}
-                        cx="50%"
-                        cy="100%"
-                        startAngle={180}
-                        endAngle={0}
-                        innerRadius={60}
-                        outerRadius={90}
-                        paddingAngle={0}
-                        dataKey="value"
-                    >
-                        <Cell fill={color} />
-                        <Cell fill="#333" />
-                    </Pie>
-                </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute bottom-0 text-center">
-                <div className="text-3xl font-bold" style={{ color }}>{dsr.toFixed(1)}%</div>
-                <div className="text-xs text-gray-400">DSR (총부채원리금상환비율)</div>
+        <div className="flex flex-col items-center justify-center w-full">
+            {/* Battery Body */}
+            <div className="relative w-full h-12 rounded-xl border-2 border-slate-600 bg-slate-800/50 p-1 flex items-center">
+                {/* Battery Nipple (Connector) - Absolute positioned to the right */}
+                <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-2 h-6 bg-slate-600 rounded-r-md" />
+
+                {/* Fill Level */}
+                <div
+                    className={`h-full rounded-lg transition-all duration-1000 ease-out ${colorClass}`}
+                    style={{ width: `${percentage}%` }}
+                >
+                    {/* Glossy effect */}
+                    <div className="w-full h-1/2 bg-white/20 rounded-t-lg" />
+                </div>
+
+                {/* Percentage Text Overlay (Centered) */}
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                    <span className="text-white font-bold drop-shadow-md text-sm md:text-base">
+                        {dsr.toFixed(1)}% usage
+                    </span>
+                </div>
             </div>
         </div>
     );

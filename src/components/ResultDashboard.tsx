@@ -36,10 +36,10 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
             </div>
 
             {/* Quick Edit Section */}
-            <Card className="bg-slate-50 border-slate-200">
+            <Card>
                 <CardContent className="pt-6">
                     <div className="flex justify-between items-center mb-4 cursor-pointer" onClick={() => setEditMode(!editMode)}>
-                        <h3 className="font-medium text-base text-slate-700 flex items-center gap-2">
+                        <h3 className="font-medium text-base text-white flex items-center gap-2">
                             <Pencil size={16} /> 시뮬레이션 조정 (Quick Edit)
                         </h3>
                         <span className="text-xs text-brand-600">{editMode ? '접기' : '펼치기'}</span>
@@ -50,7 +50,7 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                             <div className="space-y-2">
                                 <div className="flex justify-between">
                                     <Label>매수 가격 조정</Label>
-                                    <span className="font-bold text-brand-700">{formatMoney(inputs.targetHousePrice)}</span>
+                                    <span className="font-bold text-brand-600">{formatMoney(inputs.targetHousePrice)}</span>
                                 </div>
                                 <Slider
                                     value={inputs.targetHousePrice}
@@ -59,17 +59,25 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                                     step={100}
                                     onChange={(e) => updateInput('targetHousePrice', Number(e.target.value))}
                                 />
+                                <div className="flex justify-between text-xs text-gray-400">
+                                    <span>{formatMoney(inputs.targetHousePrice * 0.5)}</span>
+                                    <span>{formatMoney(inputs.targetHousePrice * 1.5)}</span>
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <div className="flex justify-between">
                                     <Label>대출 금리</Label>
-                                    <span className="font-bold text-brand-700">{inputs.mortgageRate}%</span>
+                                    <span className="font-bold text-brand-600">{inputs.mortgageRate}%</span>
                                 </div>
                                 <Slider
                                     value={inputs.mortgageRate}
                                     min={2.0} max={8.0} step={0.1}
                                     onChange={(e) => updateInput('mortgageRate', Number(e.target.value))}
                                 />
+                                <div className="flex justify-between text-xs text-gray-400">
+                                    <span>2.0%</span>
+                                    <span>8.0%</span>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -80,7 +88,7 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                 <Card>
                     <CardContent className="p-6 flex flex-col items-center">
                         <h3 className="text-sm font-medium text-slate-500 mb-4">DSR 안전도</h3>
-                        <div className="h-40 w-full flex items-center justify-center">
+                        <div className="py-4 w-full flex items-center justify-center px-2">
                             <DSRGauge dsr={results.dsrRatio} />
                         </div>
                         <p className={`text-sm font-bold ${results.isDSRSafe ? 'text-green-600' : 'text-red-500'}`}>
