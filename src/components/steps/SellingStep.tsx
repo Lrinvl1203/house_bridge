@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Input, Label, Button } from '../ui/base';
 import { Building2, Search, CheckCircle2 } from 'lucide-react';
 import { KOREA_REGIONS } from '../../data/regions';
@@ -10,6 +10,9 @@ interface Props {
     inputs: SimulatorInputs;
     updateInput: (key: keyof SimulatorInputs, value: any) => void;
 }
+
+// Helper for comma formatting
+const formatNumber = (num: number) => num.toLocaleString();
 
 export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
     // Local state for search
@@ -23,6 +26,16 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
     // Apartment Name Filter
     const [aptFilter, setAptFilter] = useState('');
 
+    // Local state for formatted inputs
+    const [sellPriceStr, setSellPriceStr] = useState(formatNumber(inputs.currentHousePrice));
+    const [acqPriceStr, setAcqPriceStr] = useState(formatNumber(inputs.currentHouseAcqPrice));
+    const [loanStr, setLoanStr] = useState(formatNumber(inputs.existingLoanBalance));
+
+    // Sync from props
+    useEffect(() => { setSellPriceStr(formatNumber(inputs.currentHousePrice)); }, [inputs.currentHousePrice]);
+    useEffect(() => { setAcqPriceStr(formatNumber(inputs.currentHouseAcqPrice)); }, [inputs.currentHouseAcqPrice]);
+    useEffect(() => { setLoanStr(formatNumber(inputs.existingLoanBalance)); }, [inputs.existingLoanBalance]);
+
     const filteredRegions = KOREA_REGIONS.filter(r => r.name.includes(regionName) || r.code.includes(regionName));
 
     const handleRegionSelect = (code: string, name: string) => {
@@ -31,18 +44,28 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
         setShowRegionList(false);
     };
 
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        setter: React.Dispatch<React.SetStateAction<string>>,
+        field: keyof SimulatorInputs
+    ) => {
+        const raw = e.target.value.replace(/,/g, '');
+        if (!/^\d*$/.test(raw)) return;
+
+        const val = Number(raw);
+        setter(Number(raw).toLocaleString());
+        updateInput(field, val);
+    };
+
     const fetchRealTimePrice = async () => {
         setLoading(true);
         try {
-            // Using fetch directly to match the fix in route.ts logic if client-side axios has issues, 
-            // but we fixed route.ts so client axios to internal API is fine.
             const response = await axios.get('/api/molit/transaction', {
                 params: { lawdCd: regionCode, dealYmd: dealMonth }
             });
 
             let items: any[] = [];
 
-            // Logic adapted from Sidebar.tsx
             if (response.data.format === 'xml') {
                 const xmlStr = response.data.data;
                 const parser = new DOMParser();
@@ -142,7 +165,10 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                                         <div key={idx}
                                             onClick={() => {
                                                 const price = parseInt(item['거래금액'].replace(/,/g, ''), 10);
-                                                if (confirm(`${price}만원으로 설정할까요?`)) updateInput('currentHousePrice', price);
+                                                if (confirm(`${price}만원으로 설정할까요?`)) {
+                                                    updateInput('currentHousePrice', price);
+                                                    setSellPriceStr(price.toLocaleString()); // Update local input too
+                                                }
                                             }}
                                             className="flex justify-between items-center p-2 hover:bg-white/5 rounded-lg cursor-pointer border-b last:border-0 border-white/5"
                                         >
@@ -171,10 +197,11 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                         <Label>매도 예상가</Label>
                         <div className="flex items-center gap-2">
                             <Input
-                                type="number"
-                                value={inputs.currentHousePrice}
-                                onChange={(e) => updateInput('currentHousePrice', Number(e.target.value))}
+                                type="text"
+                                value={sellPriceStr}
+                                onChange={(e) => handleChange(e, setSellPriceStr, 'currentHousePrice')}
                                 className="text-right text-lg font-bold text-primary border-primary/30 bg-primary/5"
+                                placeholder="0"
                             />
                             <span className="text-gray-400 w-8">만원</span>
                         </div>
@@ -184,19 +211,21 @@ export const SellingStep: React.FC<Props> = ({ inputs, updateInput }) => {
                         <div className="space-y-2">
                             <Label>취득 당시 가격</Label>
                             <Input
-                                type="number"
-                                value={inputs.currentHouseAcqPrice}
-                                onChange={(e) => updateInput('currentHouseAcqPrice', Number(e.target.value))}
+                                type="text"
+                                value={acqPriceStr}
+                                onChange={(e) => handleChange(e, setAcqPriceStr, 'currentHouseAcqPrice')}
                                 className="text-right"
+                                placeholder="0"
                             />
                         </div>
                         <div className="space-y-2">
                             <Label>주담대 잔액</Label>
                             <Input
-                                type="number"
-                                value={inputs.existingLoanBalance}
-                                onChange={(e) => updateInput('existingLoanBalance', Number(e.target.value))}
+                                type="text"
+                                value={loanStr}
+                                onChange={(e) => handleChange(e, setLoanStr, 'existingLoanBalance')}
                                 className="text-right"
+                                placeholder="0"
                             />
                         </div>
                     </div>
