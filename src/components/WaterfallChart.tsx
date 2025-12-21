@@ -9,10 +9,21 @@ interface Props {
 }
 
 const formatManWon = (val: any) => {
-    if (typeof val === 'number' && Math.abs(val) >= 10000) {
-        return `${(val / 10000).toFixed(1)}억`;
+    const numVal = Number(val);
+    if (Math.abs(numVal) >= 10000) {
+        return `${(numVal / 10000).toFixed(1)}억`;
     }
-    return `${(Number(val) / 1000).toFixed(0)}천`; // Simple compact formatting
+    return `${numVal.toLocaleString()}`;
+};
+
+const formatTooltipValue = (val: any) => {
+    const num = Number(val);
+    if (Math.abs(num) >= 10000) {
+        const eok = Math.floor(Math.abs(num) / 10000);
+        const man = Math.round(Math.abs(num) % 10000);
+        return `${eok.toLocaleString()}억 ${man > 0 ? man.toLocaleString() : ''}만원`;
+    }
+    return `${Math.round(num).toLocaleString()}만원`;
 };
 
 export const WaterfallChart: React.FC<Props> = ({ data }) => {
@@ -61,7 +72,7 @@ export const WaterfallChart: React.FC<Props> = ({ data }) => {
                 <div className="flex items-center gap-2 text-xs bg-slate-900/50 px-2 py-1 rounded border border-slate-700/50">
                     <div className="flex items-center gap-1">
                         <div className="w-6 h-[2px] border-t border-dashed border-[#f4c025] mt-[1px]"></div>
-                        <span className="text-[#f4c025] font-bold">필요 자금 총액: {formatManWon(targetPrice)}</span>
+                        <span className="text-[#f4c025] font-bold">필요 자금 총액: {formatTooltipValue(targetPrice)}</span>
                     </div>
                 </div>
             </div>
@@ -82,7 +93,7 @@ export const WaterfallChart: React.FC<Props> = ({ data }) => {
                             itemStyle={{ color: '#fff' }}
                             formatter={(value: any, name: any, props: any) => {
                                 const val = props.payload.value || 0;
-                                return [`${(val / 10000).toFixed(2)}억`, props.payload.name];
+                                return [formatTooltipValue(val), props.payload.name];
                             }}
                         />
                         <ReferenceLine

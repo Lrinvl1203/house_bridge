@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from './ui/base';
 import { DSRGauge } from './DSRGauge';
 import { WaterfallChart } from './WaterfallChart';
 import { CheckCircle, AlertTriangle, RefreshCw, Pencil, BookOpen, ChevronUp, ChevronDown } from 'lucide-react';
-import { Slider, Label } from './ui/base';
+import { Slider, Label, Input } from './ui/base';
 
 import { SimulatorInputs } from '../types';
 import { SIMULATION_CRITERIA } from '../constants';
@@ -15,14 +15,59 @@ interface Props {
     onRestart: () => void;
 }
 
+// Helper: 3-digit comma formatting
+const formatNumber = (num: number) => num.toLocaleString();
+
+// Helper: Money formatting with units but keeping commas
 const formatMoney = (val: number) => {
-    if (Math.abs(val) >= 10000) return `${(val / 10000).toFixed(2)}억`;
+    // 10,000 Man-won = 1 Eok
+    if (Math.abs(val) >= 10000) {
+        const eok = Math.floor(Math.abs(val) / 10000);
+        const man = Math.round(Math.abs(val) % 10000);
+        return `${eok.toLocaleString()}억 ${man > 0 ? man.toLocaleString() : ''}만원`;
+    }
     return `${Math.round(val).toLocaleString()}만원`;
 };
+
+// Helper: Raw number input handler (removes non-digits)
+const parseNumberInput = (value: string) => {
+    return Number(value.replace(/[^0-9.]/g, ''));
+};
+
+const formatInputDisplay = (val: number) => val.toLocaleString();
 
 export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput, onRestart }) => {
     const isPossible = results.cashBalance >= 0;
     const [editMode, setEditMode] = useState(false);
+
+    // Local state for inputs to handle string editing (commas)
+    const [priceInput, setPriceInput] = useState(formatInputDisplay(inputs.targetHousePrice));
+    const [rateInput, setRateInput] = useState(inputs.mortgageRate.toString());
+
+    // Sync input fields when slider/external changes happen
+    useEffect(() => {
+        setPriceInput(formatInputDisplay(inputs.targetHousePrice));
+    }, [inputs.targetHousePrice]);
+
+    useEffect(() => {
+        setRateInput(inputs.mortgageRate.toString());
+    }, [inputs.mortgageRate]);
+
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value.replace(/,/g, ''); // Remove commas
+        if (!/^\d*$/.test(raw)) return; // Only allow digits
+
+        const val = Number(raw);
+        setPriceInput(Number(raw).toLocaleString()); // Update display with commas
+        updateInput('targetHousePrice', val);
+    };
+
+    const handleRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        if (!/^[\d.]*$/.test(val)) return; // Only allow digits and dot
+        setRateInput(val);
+        updateInput('mortgageRate', Number(val));
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 pb-20">
@@ -49,9 +94,15 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                     {editMode && (
                         <div className="space-y-6 animate-in slide-in-from-top-2">
                             <div className="space-y-2">
-                                <div className="flex justify-between">
-                                    <Label>매수 가격 조정</Label>
-                                    <span className="font-bold text-brand-600">{formatMoney(inputs.targetHousePrice)}</span>
+                                <div className="flex justify-between items-center">
+                                    <Label>매수 가격 조정 (단위: 만원)</Label>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                    <Input
+                                        value={priceInput}
+                                        onChange={handlePriceChange}
+                                        className="h-10 text-right font-bold text-brand-600 tracking-wide"
+                                    />
                                 </div>
                                 <Slider
                                     value={inputs.targetHousePrice}
@@ -66,9 +117,15 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <div className="flex justify-between">
-                                    <Label>대출 금리</Label>
-                                    <span className="font-bold text-brand-600">{inputs.mortgageRate}%</span>
+                                <div className="flex justify-between items-center">
+                                    <Label>대출 금리 (%)</Label>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                    <Input
+                                        value={rateInput}
+                                        onChange={handleRateChange}
+                                        className="h-10 text-right font-bold text-brand-600 tracking-wide"
+                                    />
                                 </div>
                                 <Slider
                                     value={inputs.mortgageRate}
