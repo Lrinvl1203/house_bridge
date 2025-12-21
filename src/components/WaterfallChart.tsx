@@ -56,28 +56,49 @@ export const WaterfallChart: React.FC<Props> = ({ data }) => {
     const targetPrice = data.purchasePrice + data.totalClosingCosts;
 
     return (
-        <div className="w-full h-64">
-            <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={rangeData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                    <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#9ca3af' }} axisLine={{ stroke: '#333' }} tickLine={false} />
-                    <YAxis tickFormatter={formatManWon} tick={{ fontSize: 12, fill: '#9ca3af' }} axisLine={{ stroke: '#333' }} tickLine={false} />
-                    <Tooltip
-                        contentStyle={{ backgroundColor: '#2a2720', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
-                        itemStyle={{ color: '#fff' }}
-                        formatter={(value: any, name: any, props: any) => {
-                            const val = props.payload.value || 0;
-                            return [`${(val / 10000).toFixed(2)}억`, props.payload.name];
-                        }}
-                    />
-                    <ReferenceLine y={targetPrice} stroke="#f4c025" strokeDasharray="3 3" label={{ value: "필요 총액", position: 'right', fontSize: 10, fill: '#f4c025' }} />
-                    <Bar dataKey="range" radius={[4, 4, 4, 4]}>
-                        {rangeData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
-                        ))}
-                        <LabelList dataKey="value" position="top" formatter={formatManWon} style={{ fontSize: '10px', fill: '#e2e8f0', fontWeight: 'bold' }} />
-                    </Bar>
-                </BarChart>
-            </ResponsiveContainer>
+        <div className="w-full h-64 flex flex-col">
+            <div className="flex justify-end items-center mb-1 pr-2">
+                <div className="flex items-center gap-2 text-xs bg-slate-900/50 px-2 py-1 rounded border border-slate-700/50">
+                    <div className="flex items-center gap-1">
+                        <div className="w-6 h-[2px] border-t border-dashed border-[#f4c025] mt-[1px]"></div>
+                        <span className="text-[#f4c025] font-bold">필요 자금 총액: {formatManWon(targetPrice)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 w-full min-h-0">
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={rangeData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                        <XAxis
+                            dataKey="name"
+                            tick={{ fontSize: 11, fill: '#9ca3af' }}
+                            axisLine={{ stroke: '#333' }}
+                            tickLine={false}
+                            interval={0}
+                        />
+                        <YAxis tickFormatter={formatManWon} tick={{ fontSize: 12, fill: '#9ca3af' }} axisLine={{ stroke: '#333' }} tickLine={false} />
+                        <Tooltip
+                            contentStyle={{ backgroundColor: '#2a2720', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
+                            itemStyle={{ color: '#fff' }}
+                            formatter={(value: any, name: any, props: any) => {
+                                const val = props.payload.value || 0;
+                                return [`${(val / 10000).toFixed(2)}억`, props.payload.name];
+                            }}
+                        />
+                        <ReferenceLine
+                            y={targetPrice}
+                            stroke="#f4c025"
+                            strokeDasharray="3 3"
+                        />
+                        <Bar dataKey="range" radius={[4, 4, 4, 4]}>
+                            {rangeData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
+                            ))}
+                            <LabelList dataKey="value" position="top" formatter={formatManWon} style={{ fontSize: '10px', fill: '#e2e8f0', fontWeight: 'bold' }} />
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
         </div>
     );
 };

@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Card, CardContent } from './ui/base';
 import { DSRGauge } from './DSRGauge';
 import { WaterfallChart } from './WaterfallChart';
-import { CheckCircle, AlertTriangle, RefreshCw, Pencil } from 'lucide-react';
+import { CheckCircle, AlertTriangle, RefreshCw, Pencil, BookOpen, ChevronUp, ChevronDown } from 'lucide-react';
 import { Slider, Label } from './ui/base';
 
 import { SimulatorInputs } from '../types';
+import { SIMULATION_CRITERIA } from '../constants';
 
 interface Props {
     results: any;
@@ -131,12 +132,169 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                 </CardContent>
             </Card>
 
+            <div className="pt-4">
+                <button
+                    onClick={onRestart}
+                    className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-black/20"
+                >
+                    <RefreshCw size={20} /> 처음부터 다시하기
+                </button>
+            </div>
+
+            <CalculationLogicReference />
+        </div>
+    );
+};
+
+const CalculationLogicReference = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="mt-8 border-t border-slate-200/20 pt-8">
             <button
-                onClick={onRestart}
-                className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors"
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 text-slate-500 hover:text-slate-300 transition-colors text-sm mx-auto mb-4"
             >
-                <RefreshCw size={20} /> 처음부터 다시하기
+                <BookOpen size={16} />
+                <span>이 시뮬레이션에 사용된 계산 로직 보기</span>
+                {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
+
+            {isOpen && (
+                <Card className="bg-slate-800/50 border-slate-700 animate-in fade-in slide-in-from-top-4">
+                    <CardContent className="p-6 text-sm text-slate-300 space-y-8">
+
+                        <div className="space-y-3 pb-6 border-b border-slate-700 border-dashed">
+                            <h4 className="font-bold text-lg text-white flex items-center gap-2">
+                                🏁 최종 자금 과부족은 어떻게 계산되나요?
+                            </h4>
+                            <div className="bg-slate-900/50 p-4 rounded-lg font-mono text-xs md:text-sm space-y-2 text-brand-100">
+                                <p className="font-bold text-center border-b border-slate-700 pb-2 mb-2">
+                                    최종 여유 자금 = (가용 자금 총합) - (필요 자금 총합)
+                                </p>
+                                <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center text-center opacity-80">
+                                    <div className="text-right">
+                                        <div className="text-blue-300">보유 현금</div>
+                                        <div className="text-blue-300">+ 매도 순수익</div>
+                                        <div className="text-brand-400 font-bold">+ 대출 실행금</div>
+                                    </div>
+                                    <div className="font-bold">-</div>
+                                    <div className="text-left">
+                                        <div className="text-red-300">매수 주택 가격</div>
+                                        <div className="text-red-300">+ 취득세 등 제반 비용</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs opacity-70">
+                                * 계산 결과가 <strong>(+)</strong>면 자금이 충분한 것이고, <strong>(-)</strong>면 해당 금액만큼 현금이 부족한 상태입니다.
+                            </p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h4 className="font-bold text-brand-600 flex items-center gap-2">
+                                📉 자금 흐름도 각 항목 상세
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-slate-900/30 p-3 rounded-lg">
+                                    <span className="font-bold text-blue-400 block mb-1">1. 순자산 (매도 후)</span>
+                                    <p className="text-xs opacity-70">
+                                        (기존 주택 가격 - 기존 주택 담보 대출 잔액) + 현재 보유 현금
+                                    </p>
+                                </div>
+                                <div className="bg-slate-900/30 p-3 rounded-lg">
+                                    <span className="font-bold text-red-400 block mb-1">2. 매도 비용 차감</span>
+                                    <p className="text-xs opacity-70">
+                                        기존 주택 매도 시 발생하는 <strong>양도소득세</strong>와 <strong>중개수수료</strong>를 차감합니다.
+                                    </p>
+                                </div>
+                                <div className="bg-slate-900/30 p-3 rounded-lg">
+                                    <span className="font-bold text-red-400 block mb-1">3. 매수 비용 차감</span>
+                                    <p className="text-xs opacity-70">
+                                        새 집을 살 때 내야 하는 <strong>취득세</strong>, <strong>중개수수료</strong>, 그리고 <strong>이사 비용</strong>입니다.
+                                    </p>
+                                </div>
+                                <div className="bg-slate-900/30 p-3 rounded-lg">
+                                    <span className="font-bold text-brand-400 block mb-1">4. 부족 자금 대출</span>
+                                    <p className="text-xs opacity-70">
+                                        LTV와 DSR 한도 내에서 부족한 금액만큼 대출을 실행합니다. (최대 한도까지 받아도 부족하면 '자금 부족' 발생)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-slate-700/50 pt-4 space-y-6">
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-brand-600 flex items-center gap-2">
+                                    📊 양도소득세 (1주택 비과세 및 장특공제)
+                                </h4>
+                                <p className="leading-relaxed text-xs opacity-80">
+                                    1세대 1주택자의 경우 12억 원까지 비과세가 적용됩니다. 12억 원 초과분에 대해서는 장기보유특별공제(보유/거주 기간별 최대 80%)가 적용되며, 기본 공제 250만 원 후 과세표준 구간별(6% ~ 45%) 세율이 적용됩니다. (지방소득세 10% 별도)
+                                </p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-brand-600 flex items-center gap-2">
+                                    🏠 취득세 (거래 금액별 차등)
+                                </h4>
+                                <p className="leading-relaxed text-xs opacity-80">
+                                    6억 이하: 1%, 6~9억: 1~3% (비례 구간), 9억 초과: 3%가 적용됩니다. 여기에 지방교육세(0.1%)가 더해지며, 85㎡ 초과 주택은 농어촌특별세(0.2%)가 추가됩니다.
+                                </p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-brand-600 flex items-center gap-2">
+                                    🤝 중개수수료 (상한 요율 적용)
+                                </h4>
+                                <ul className="list-disc list-inside text-xs opacity-80 space-y-1">
+                                    <li>9억 미만: 0.4%</li>
+                                    <li>9억 ~ 12억: 0.5%</li>
+                                    <li>12억 ~ 15억: 0.6%</li>
+                                    <li>15억 이상: 0.7%</li>
+                                </ul>
+                                <p className="text-[10px] text-slate-500 mt-1">* 실제 거래 시 협의 가능</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-brand-600 flex items-center gap-2">
+                                    💰 대출 한도 (DSR & LTV)
+                                </h4>
+                                <p className="leading-relaxed text-xs opacity-80">
+                                    LTV(주택담보인정비율)와 DSR(총부채원리금상환비율) 중 더 낮은 금액으로 한도가 결정됩니다. DSR 계산 시 미래 금리 변동 위험을 반영한 스트레스 금리가 가산되어 보수적으로 산출됩니다.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-4 border-t border-slate-700/50">
+                            <h4 className="font-bold text-yellow-500 flex items-center gap-2">
+                                🔑 현재 시뮬레이션에 적용된 기준 (2025년 12월 확인)
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs opacity-90">
+                                {SIMULATION_CRITERIA.map((criteria, idx) => (
+                                    <div key={idx} className="bg-slate-900/40 p-3 rounded border border-slate-700/50">
+                                        <span className="text-slate-400 block mb-1">{criteria.label}</span>
+                                        <span className="font-bold text-white">{criteria.value}</span>
+                                        <span className="block text-[10px] text-slate-500 mt-1">{criteria.note}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-red-900/20 border border-red-900/50 p-4 rounded-lg flex gap-3 items-start">
+                            <AlertTriangle className="text-red-500 shrink-0 mt-0.5" size={18} />
+                            <div className="space-y-1">
+                                <h5 className="text-red-400 font-bold text-xs">필독: 시뮬레이션 결과 활용 시 유의사항</h5>
+                                <p className="text-[11px] text-red-200/70 leading-relaxed">
+                                    본 결과는 사용자가 입력한 값과 일반적인 세법/대출 규제를 토대로 추산된 <strong>단순 참고용 시뮬레이션</strong>입니다.
+                                    개인의 신용도, 소득 종류, 주택의 세부 조건(규제지역, 오피스텔 등), 그리고 정부 정책의 실시간 변경에 따라
+                                    <strong>실제 가능 대출금액 및 세금은 크게 달라질 수 있습니다.</strong>
+                                    <br /><br />
+                                    부동산 계약 및 대출 실행 전, 반드시 <strong>세무사(세금)</strong> 및 <strong>은행 대출 상담사(대출)</strong>와 교차 확인하시기 바랍니다.
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
         </div>
     );
 };
