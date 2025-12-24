@@ -105,18 +105,14 @@ export const Dashboard: React.FC<Props> = ({ inputs, results, updateInput }) => 
                             <span className="font-medium">{inputs.mortgageRate}%</span>
                         </div>
                         <input
-                            type="range"
-                            min="2.0"
-                            max="8.0"
+                            type="number"
+                            min="0"
+                            max="100"
                             step="0.1"
                             value={inputs.mortgageRate}
                             onChange={(e) => updateInput('mortgageRate', Number(e.target.value))}
-                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600"
+                            className="w-full h-10 px-3 bg-slate-100 border border-slate-200 rounded-lg text-right font-medium focus:outline-none focus:ring-2 focus:ring-brand-600"
                         />
-                        <div className="flex justify-between text-xs text-slate-400">
-                            <span>2.0%</span>
-                            <span>8.0%</span>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from './ui/base';
 import { DSRGauge } from './DSRGauge';
 import { WaterfallChart } from './WaterfallChart';
-import { CheckCircle, AlertTriangle, RefreshCw, Pencil, BookOpen, ChevronUp, ChevronDown } from 'lucide-react';
+import { CheckCircle, AlertTriangle, RefreshCw, Pencil, BookOpen, ChevronUp, ChevronDown, ChevronLeft, TrendingUp, DollarSign, Home } from 'lucide-react';
 import { Slider, Label, Input } from './ui/base';
 
 import { SimulatorInputs } from '../types';
@@ -13,6 +13,7 @@ interface Props {
     inputs: SimulatorInputs;
     updateInput: (key: keyof SimulatorInputs, value: any) => void;
     onRestart: () => void;
+    onBack?: () => void;
 }
 
 // Helper: 3-digit comma formatting
@@ -36,37 +37,70 @@ const parseNumberInput = (value: string) => {
 
 const formatInputDisplay = (val: number) => val.toLocaleString();
 
-export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput, onRestart }) => {
+export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput, onRestart, onBack }) => {
     const isPossible = results.cashBalance >= 0;
     const [editMode, setEditMode] = useState(false);
 
-    // Local state for inputs to handle string editing (commas)
-    const [priceInput, setPriceInput] = useState(formatInputDisplay(inputs.targetHousePrice));
-    const [rateInput, setRateInput] = useState(inputs.mortgageRate.toString());
+    // 자금 부족 시 제안 사항 계산
+    const getShortageAdvice = () => {
+        if (isPossible) return null;
 
-    // Sync input fields when slider/external changes happen
-    useEffect(() => {
-        setPriceInput(formatInputDisplay(inputs.targetHousePrice));
-    }, [inputs.targetHousePrice]);
+        const shortage = Math.abs(results.cashBalance);
+        const suggestions = [];
 
-    useEffect(() => {
-        setRateInput(inputs.mortgageRate.toString());
-    }, [inputs.mortgageRate]);
+        // 1. 매수 가격 조정 (가장 쉬움 - 녹색)
+        const reducedPrice = inputs.targetHousePrice - shortage;
+        if (reducedPrice > 0) {
+            suggestions.push({
+                icon: Home,
+                color: 'text-blue-400',
+                title: '매수 가격 조정',
+                description: `매수 예상 가격을 ${formatMoney(reducedPrice)}으로 낮추면 해결됩니다.`,
+                adjustment: `${formatMoney(shortage)} 하향`,
+                difficulty: 'easy',
+                trafficLight: '🟢'
+            });
+        }
 
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const raw = e.target.value.replace(/,/g, ''); // Remove commas
-        if (!/^\d*$/.test(raw)) return; // Only allow digits
+        // 2. 현재 주택 매도가 상향 (중간 - 노란색)
+        const increasedOldPrice = inputs.currentHousePrice + shortage;
+        suggestions.push({
+            icon: TrendingUp,
+            color: 'text-green-400',
+            title: '현재 주택 매도가 상향',
+            description: `현재 주택을 ${formatMoney(increasedOldPrice)}에 매도하면 해결됩니다.`,
+            adjustment: `${formatMoney(shortage)} 상향`,
+            difficulty: 'medium',
+            trafficLight: '🟡'
+        });
 
-        const val = Number(raw);
-        setPriceInput(Number(raw).toLocaleString()); // Update display with commas
-        updateInput('targetHousePrice', val);
-    };
+        // 3. 보유 현금 추가 (중간 - 노란색)
+        const additionalCash = inputs.cashAssets + shortage;
+        suggestions.push({
+            icon: DollarSign,
+            color: 'text-yellow-400',
+            title: '보유 현금 추가',
+            description: `현금을 ${formatMoney(additionalCash)}로 늘리면 해결됩니다.`,
+            adjustment: `${formatMoney(shortage)} 추가 필요`,
+            difficulty: 'medium',
+            trafficLight: '🟡'
+        });
 
-    const handleRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        if (!/^[\d.]*$/.test(val)) return; // Only allow digits and dot
-        setRateInput(val);
-        updateInput('mortgageRate', Number(val));
+        // 4. 연소득 증가 (어려움 - 빨간색)
+        const currentDSRLimit = results.maxLoanDSR;
+        const neededIncrease = shortage;
+        const estimatedIncomeIncrease = (neededIncrease / 0.4) * 12; // DSR 40% 기준 역산
+        suggestions.push({
+            icon: TrendingUp,
+            color: 'text-purple-400',
+            title: '연소득 증가',
+            description: `연소듍을 약 ${formatMoney(estimatedIncomeIncrease)}만큼 늘리면 DSR 한도가 증가하여 해결 가능합니다.`,
+            adjustment: `약 ${formatMoney(estimatedIncomeIncrease)} 증가`,
+            difficulty: 'hard',
+            trafficLight: '🔴'
+        });
+
+        return suggestions;
     };
 
     return (
@@ -79,6 +113,36 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                 <div className="text-lg mt-1 font-semibold text-slate-800">
                     {formatMoney(Math.abs(results.cashBalance))} {isPossible ? '남음' : '부족함'}
                 </div>
+
+                {/* 자금 부족 시 해결 방안 제시 */}
+                {!isPossible && (
+                    <div className="mt-6 bg-red-50 border border-red-200 rounded-xl p-4 text-left">
+                        <h3 className="text-sm font-bold text-red-800 mb-3 flex items-center gap-2">
+                            <AlertTriangle size={16} />
+                            자금 부족 해결 방안
+                        </h3>
+                        <div className="space-y-3">
+                            {getShortageAdvice()?.map((suggestion, idx) => {
+                                const Icon = suggestion.icon;
+                                return (
+                                    <div key={idx} className="bg-white rounded-lg p-3 border border-red-100">
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <span className="text-lg">{suggestion.trafficLight}</span>
+                                                <Icon className={`${suggestion.color} shrink-0 mt-0.5`} size={18} />
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="font-semibold text-sm text-slate-800">{suggestion.title}</div>
+                                                <div className="text-xs text-slate-600 mt-1">{suggestion.description}</div>
+                                                <div className="text-xs text-red-600 font-medium mt-1">{suggestion.adjustment}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Quick Edit Section */}
@@ -97,23 +161,44 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                                 <div className="flex justify-between items-center">
                                     <Label>매수 가격 조정 (단위: 만원)</Label>
                                 </div>
-                                <div className="flex gap-2 items-center">
-                                    <Input
-                                        value={priceInput}
-                                        onChange={handlePriceChange}
-                                        className="h-10 text-right font-bold text-brand-600 tracking-wide"
+                                <div className="relative">
+                                    {/* Number input with visible arrows */}
+                                    <input
+                                        type="number"
+                                        value={inputs.targetHousePrice}
+                                        onChange={(e) => updateInput('targetHousePrice', Number(e.target.value))}
+                                        step={100}
+                                        min={0}
+                                        className="flex h-10 w-full rounded-xl border border-white/10 bg-surface-dark/50 px-4 py-2 text-sm text-white ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-all text-right font-bold text-brand-600 tracking-wide"
+                                        style={{
+                                            MozAppearance: 'textfield',
+                                            WebkitAppearance: 'none'
+                                        }}
                                     />
-                                </div>
-                                <Slider
-                                    value={inputs.targetHousePrice}
-                                    min={inputs.targetHousePrice * 0.5}
-                                    max={inputs.targetHousePrice * 1.5}
-                                    step={100}
-                                    onChange={(e) => updateInput('targetHousePrice', Number(e.target.value))}
-                                />
-                                <div className="flex justify-between text-xs text-gray-400">
-                                    <span>{formatMoney(inputs.targetHousePrice * 0.5)}</span>
-                                    <span>{formatMoney(inputs.targetHousePrice * 1.5)}</span>
+                                    {/* Comma-formatted overlay display */}
+                                    <div
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-sm font-bold text-brand-600 tracking-wide"
+                                        style={{ opacity: inputs.targetHousePrice ? 1 : 0 }}
+                                    >
+                                        {inputs.targetHousePrice.toLocaleString()}
+                                    </div>
+                                    {/* Custom arrow buttons */}
+                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-0.5">
+                                        <button
+                                            type="button"
+                                            onClick={() => updateInput('targetHousePrice', inputs.targetHousePrice + 100)}
+                                            className="w-6 h-4 flex items-center justify-center bg-surface-dark/80 hover:bg-primary/20 rounded text-brand-600 transition-colors"
+                                        >
+                                            <ChevronUp size={14} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => updateInput('targetHousePrice', Math.max(0, inputs.targetHousePrice - 100))}
+                                            className="w-6 h-4 flex items-center justify-center bg-surface-dark/80 hover:bg-primary/20 rounded text-brand-600 transition-colors"
+                                        >
+                                            <ChevronDown size={14} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -122,19 +207,14 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     <Input
-                                        value={rateInput}
-                                        onChange={handleRateChange}
+                                        type="number"
+                                        value={inputs.mortgageRate}
+                                        onChange={(e) => updateInput('mortgageRate', Number(e.target.value))}
+                                        step={0.1}
+                                        min={0}
+                                        max={100}
                                         className="h-10 text-right font-bold text-brand-600 tracking-wide"
                                     />
-                                </div>
-                                <Slider
-                                    value={inputs.mortgageRate}
-                                    min={2.0} max={8.0} step={0.1}
-                                    onChange={(e) => updateInput('mortgageRate', Number(e.target.value))}
-                                />
-                                <div className="flex justify-between text-xs text-gray-400">
-                                    <span>2.0%</span>
-                                    <span>8.0%</span>
                                 </div>
                             </div>
                         </div>
@@ -189,13 +269,23 @@ export const ResultDashboard: React.FC<Props> = ({ results, inputs, updateInput,
                 </CardContent>
             </Card>
 
-            <div className="pt-4">
-                <button
-                    onClick={onRestart}
-                    className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-black/20"
-                >
-                    <RefreshCw size={20} /> 처음부터 다시하기
-                </button>
+            <div className="pt-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                    {onBack && (
+                        <button
+                            onClick={onBack}
+                            className="py-4 bg-slate-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-600 transition-colors"
+                        >
+                            <ChevronLeft size={20} /> 이전
+                        </button>
+                    )}
+                    <button
+                        onClick={onRestart}
+                        className={`py-4 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors shadow-lg shadow-black/20 ${!onBack ? 'col-span-2' : ''}`}
+                    >
+                        <RefreshCw size={20} /> 처음부터 다시하기
+                    </button>
+                </div>
             </div>
 
             <CalculationLogicReference />

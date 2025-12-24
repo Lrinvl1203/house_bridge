@@ -42,7 +42,7 @@ export const WizardLayout = () => {
             case 1: return <FinancialStep inputs={inputs} updateInput={updateInput} />;
             case 2: return <SellingStep inputs={inputs} updateInput={updateInput} />;
             case 3: return <BuyingStep inputs={inputs} updateInput={updateInput} />;
-            case 4: return <ResultDashboard results={results} inputs={inputs} updateInput={updateInput} onRestart={handleRestart} />;
+            case 4: return <ResultDashboard results={results} inputs={inputs} updateInput={updateInput} onRestart={handleRestart} onBack={() => setCurrentStep(3)} />;
             default: return null;
         }
     };
